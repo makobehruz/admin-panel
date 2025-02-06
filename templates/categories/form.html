@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if category %} Edit Category - E-commerce Admin Panel {% else %} Add Category - E-commerce Admin Panel {% endif %}{% endblock %}
+
+{% block content %}
+    <main class="flex-1 p-8 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">{% if category %} Edit Category {% else %} Add Category {% endif %}</h2>
+            <button class="md:hidden bg-indigo-600 text-white p-2 rounded" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- Category Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+            <form method="post" class="space-y-4" enctype="multipart/form-data">
+                {% if messages %}
+                    <div>
+                    {% for message in messages %}
+                        <div class="flex items-center justify-between w-full max-w-6xl mx-auto p-6 mb-6 text-white rounded-lg
+                            {% if message.tags == 'success' %}bg-green-600
+                            {% elif message.tags == 'info' %}bg-blue-600
+                            {% elif message.tags == 'warning' %}bg-yellow-600
+                            {% elif message.tags == 'error' %}bg-red-300 {% endif %}">
+                            <div class="flex items-center space-x-4 w-full">
+                                <i class="fas fa-info-circle"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                            <button class="text-white hover:text-gray-200" onclick="this.parentElement.style.display='none';">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                {% csrf_token %}
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                    {{ form.name }}
+                </div>
+                <div>
+                    <label for="desc" class="block text-sm font-medium text-gray-700">Description</label>
+                    {{ form.desc }}
+                </div>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700">Category Icon</label>
+                    {{ form.image }}
+                </div>
+                {% if category %}
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'categories:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Edit</button>
+                    </div>
+                {% else %}
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'categories:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Category</button>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </main>
+{% endblock %}

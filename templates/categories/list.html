@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %} Categories - E-commerce Admin Panel {% endblock %}
+
+{% block content %}
+    <main class="flex-1 p-8 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Categories</h2>
+            <button class="md:hidden bg-indigo-600 text-white p-2 rounded" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- Category List Controls -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fadeIn">
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                <form method="get" action="{% url 'categories:search' %}" class="flex flex-wrap gap-4 items-center">
+                    <input type="text" name="search" placeholder="Kategoriyalarni qidirish" class="border p-2 rounded" value="{{ search }}">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                </form>
+
+                <div>
+                    <a href="{% url 'categories:create' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i>Add Category
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category List -->
+        {% if categories %}
+            <div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-2 text-left">ID</th>
+                            <th class="p-2 text-left">Name</th>
+                            <th class="p-2 text-left">Products Count</th>
+                            <th class="p-2 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    {% for category in categories %}
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-2">{{ category.id }}</td>
+                                <td class="p-2">{{ category.name }}</td>
+                                <td class="p-2">{{ category.product_count }}</td>
+                                <td class="p-2">
+                                    <a href="{{ category.get_detail_url }}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
+                                    <a href="{{ category.get_update_url }}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
+                                    <a href="{{ category.get_delete_list_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+           <h2 class="text-2xl font-bold text-center text-gray-700 p-6 bg-gradient-to-r from-blue-300 to-blue-500 rounded-lg shadow-md flex items-center justify-center space-x-3">
+                <i class="fas fa-folder-open text-yellow-500"></i>
+                <span>There are no categories yet</span>
+            </h2>
+        {% endif %}
+    </main>
+{% endblock %}
+
