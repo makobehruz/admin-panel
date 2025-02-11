@@ -18,8 +18,8 @@
                     <h3 class="text-xl font-semibold mb-4">Order Information</h3>
                     <p><strong>Order ID:</strong> #{{ order.id }}</p>
                     <p><strong>Date:</strong>{{ order.created_at|date:"d/m/Y" }}</p>
-                    <p><strong>Status:</strong> <span class="bg-green-200 text-green-800 py-1 px-2 rounded-full text-sm">{{ order.status }}</span></p>
-                    <p><strong>Total:</strong> ${{ order.get_total_price }}</p>  <!-- Fix method call here -->
+                    <p><strong>Status:</strong> <span class="bg-green-200 text-green-800 py-1 px-2 rounded-full text-sm">{{ order.get_status_display }}</span></p>
+                    <p><strong>Total:</strong> ${{ order.get_total_price }}</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Customer Information</h3>
@@ -43,17 +43,17 @@
                 <tbody>
                     {% for item in order.order_items.all %}
                     <tr class="border-b">
-                        <td class="p-2">{{ item.product.name }}</td>  <!-- Display product name -->
+                        <td class="p-2">{{ item.product.name }}</td>
                         <td class="p-2">{{ item.quantity }}</td>
-                        <td class="p-2">${{ item.product.price }}</td> <!-- Price of product -->
-                        <td class="p-2">${{ order.get_total_price }}</td> <!-- Total price per item -->
+                        <td class="p-2">${{ item.product.price }}</td>
+                        <td class="p-2">${{ order.get_total_price }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr class="font-bold">
                         <td colspan="3" class="p-2 text-right">Total:</td>
-                        <td class="p-2">${{ order.get_total_price }}</td> <!-- Total order price -->
+                        <td class="p-2">${{ order.get_total_price }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -65,7 +65,7 @@
                 <a href="{% url 'orders:list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200">
                     <i class="fas fa-arrow-left mr-2"></i>Back to List
                 </a>
-                <a href="{{ order.get_delete_list_url }}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200">
+                <a href="{{ order.get_delete_url }}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200">
                     <i class="fas fa-trash mr-2"></i>Delete
                 </a>
             </div>

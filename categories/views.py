@@ -12,25 +12,21 @@ def category_list(request):
         'categories': categories,
         'product_count': Product.objects.count(),
     }
-    for category in categories:
-        category.product_count = Product.objects.filter(category=category).count()
     return render(request,'categories/list.html', ctx)
 
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)
         if form.is_valid():
-            Category.objects.create(
-                name = form.cleaned_data['name'],
-                desc = form.cleaned_data['desc'],
-                image = request.FILES['image'],
-            )
+            form.save()
             return redirect('categories:list')
         else:
-            messages.error(request, 'The category name must consist of letters.')
-    else:
-        form = CategoryForm()
-    return render(request,'categories/form.html', {'form': form})
+            messages.error(request, 'Fill in the table correctly.')
+    form = CategoryForm()
+    ctx = {
+        'form': form,
+    }
+    return render(request, 'categories/form.html', ctx)
 
 def category_detail(request, pk):
     category = get_object_or_404(Category, pk=pk)
@@ -42,14 +38,13 @@ def category_detail(request, pk):
     return render(request, 'categories/detail.html', ctx)
 
 
-def delete_list(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    return render(request,'categories/delete.html', {'category': category})
-
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
-    category.delete()
-    return redirect('categories:list')
+    if request.method == 'POST':
+        category.delete()
+        return redirect('categories:list')
+    return render(request, 'categories/delete.html', {'category': category})
+
 
 def category_search(request):
     search = request.GET.get('search', '')
@@ -65,24 +60,22 @@ def category_search(request):
 
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk)
+
     if request.method == 'POST':
-        form = CategoryForm(request.POST, request.FILES)
+        form = CategoryForm(request.POST, request.FILES, instance=category)
+
         if form.is_valid():
-            category.name = form.cleaned_data['name']
-            category.desc = form.cleaned_data['desc']
-            category.image = request.FILES['image']
-            category.save()
+            form.save()
             return redirect('categories:list')
         else:
-            messages.error(request, 'The category name must consist of letters.')
-    form = CategoryForm(initial={
-    'name': category.name,
-    'desc': category.desc,
-    'image': category.image
-        })
+            messages.error(request, 'Fill in the table correctly.')
+
+    form = CategoryForm(instance=category)
+
     ctx = {
         'category': category,
         'form': form,
     }
-    return render(request,'categories/form.html', ctx)
+    return render(request, 'categories/form.html', ctx)
+
 

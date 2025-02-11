@@ -16,22 +16,27 @@
         <form method="get" class="flex flex-wrap gap-4 items-center justify-between">
             <div class="flex flex-wrap gap-4 items-center">
                 <input name="search" type="text" placeholder="Search products" class="border p-2 rounded" value="{{ search }}">
-                <select class="border p-2 rounded" name="category">
+                 <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200 ml-2">
+                    <i class="fas fa-search mr-2"></i>Search
+                </button>
+                <select class="border p-2 rounded" name="category" onchange="this.form.submit()">
                     <option value="">All Categories</option>
                     {% for category in categories %}
-                        <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>{{ category.name }}</option>
+                        <option value="{{ category.name }}" {% if selected_category|lower == category.name|lower %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
+             <a href="{% url 'products:list' %}" type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200 ml-2">
+                Clear Filter
+             </a>
             <div class="flex gap-4 items-center">
-                <select name="sort_by" class="border p-2 rounded">
+                <select name="sort_by" class="border p-2 rounded" onchange="this.form.submit()">
                     <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by: Name</option>
                     <option value="low" {% if sort_by == 'low' %}selected{% endif %}>Sort by: Price (Low to High)</option>
                     <option value="high" {% if sort_by == 'high' %}selected{% endif %}>Sort by: Price (High to Low)</option>
                 </select>
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200 ml-2">
-                    <i class="fas fa-search mr-2"></i>Search
-                </button>
                 <a href="{% url 'products:create' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200 ml-2">
                     <i class="fas fa-plus mr-2"></i>Add Product
                 </a>
@@ -63,7 +68,7 @@
                         <td class="p-2">
                             <a href="{{ product.get_detail_url }}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
                             <a href="{{ product.get_update_url }}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
-                            <a href="{{ product.get_delete_list_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                            <a href="{{ product.get_delete_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 </tbody>

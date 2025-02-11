@@ -21,5 +21,3 @@ class Category(BaseModel):
     def get_delete_url(self):
         return reverse('categories:delete', args=[self.pk])
 
-    def get_delete_list_url(self):
-        return reverse('categories:delete_list', args=[self.pk])

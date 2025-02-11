@@ -22,7 +22,7 @@
                     </button>
                 </div>
                 <div>
-                    <select name="status" class="border p-2 rounded">
+                    <select name="status" class="border p-2 rounded" onchange="this.form.submit()">
                         <option value="">All Statuses</option>
                         <option value="pd" {% if status == 'pd' %}selected{% endif %}>Pending</option>
                         <option value="pg" {% if status == 'pg' %}selected{% endif %}>Processing</option>
@@ -30,6 +30,9 @@
                         <option value="dd" {% if status == 'dd' %}selected{% endif %}>Delivered</option>
                         <option value="cd" {% if status == 'cd' %}selected{% endif %}>Cancelled</option>
                     </select>
+                     <a href="{% url 'orders:list' %}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">
+                         Clear Filter
+                     </a>
                 </div>
             </form>
         </div>
@@ -59,7 +62,7 @@
                                 <td class="p-2">
                                     <a href="{{ order.get_detail_url }}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
                                     <a href="{{ order.get_update_url }}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
-                                    <a href="{{ order.get_delete_list_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                                    <a href="{{ order.get_delete_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                         </tbody>

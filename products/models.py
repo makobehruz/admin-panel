@@ -18,9 +18,6 @@ class Product(BaseModel):
    def get_detail_url(self):
       return reverse('products:detail', args=[self.pk])
 
-   def get_delete_list_url(self):
-      return reverse('products:delete_list', args=[self.pk])
-
    def get_delete_url(self):
       return reverse('products:delete', args=[self.pk])
 

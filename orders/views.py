@@ -27,14 +27,12 @@ def order_detail(request, pk):
     ctx = {'order': order}
     return render(request,'orders/detail.html', ctx)
 
-def delete_list(request, pk):
+def order_delete(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    return render(request,'orders/delete.html', {'order': order })
-
-def delete(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    order.delete()
-    return redirect('orders:list')
+    if request.method == 'POST':
+        order.delete()
+        return redirect('orders:list')
+    return render(request, 'orders/delete.html')
 
 def order_update(request, pk):
     order = get_object_or_404(Order, pk=pk)
