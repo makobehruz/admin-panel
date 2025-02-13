@@ -15,12 +15,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
                 <h3 class="text-xl font-semibold mb-4 text-gray-700">Total Sales</h3>
-                <p class="text-3xl font-bold text-indigo-600">$</p>
+                <p class="text-3xl font-bold text-indigo-600">${{ total_price }}</p>
                 <p class="text-sm text-gray-500 mt-2">+12% from last month</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
                 <h3 class="text-xl font-semibold mb-4 text-gray-700">Total Orders</h3>
-                <p class="text-3xl font-bold text-indigo-600"></p>
+                <p class="text-3xl font-bold text-indigo-600">{{ orders.count }}</p>
                 <p class="text-sm text-gray-500 mt-2">+5% from last month</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
@@ -38,6 +38,55 @@
                 <canvas id="productsByCategoryChart"></canvas>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const canvas = document.getElementById('productsByCategoryChart');
+                const ctx = canvas.getContext('2d');
+
+                // Django'dan kelgan ma'lumotlarni olish
+                const data = [
+                    {% for category in categories %}
+                        { category: '{{ category.name }}', products: {{ category.product_count }} },
+                    {% endfor %}
+                ];
+
+                // Ma'lumotlarni mahsulotlar soni bo'yicha tartiblash
+                data.sort((a, b) => a.products - b.products);
+
+                // Grafikaning o'lchamlari
+                const chartWidth = canvas.width;
+                const chartHeight = canvas.height;
+                const barWidth = chartWidth / data.length;
+
+                // Maksimal mahsulotlar sonini topish
+                const maxProducts = Math.max(...data.map(item => item.products));
+
+                // Grafikani chizish
+                ctx.clearRect(0, 0, chartWidth, chartHeight);
+
+                data.forEach((item, index) => {
+                    const barHeight = (item.products / maxProducts) * chartHeight;
+                    const x = index * barWidth;
+                    const y = chartHeight - barHeight;
+
+                    // Ustunni chizish
+                    ctx.fillStyle = `hsl(${index * 360 / data.length}, 70%, 50%)`;
+                    ctx.fillRect(x, y, barWidth - 2, barHeight);
+
+                    // Kategoriya nomini yozish
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.category, x + barWidth / 2, chartHeight - 5);
+
+                    // Mahsulotlar sonini yozish
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.products, x + barWidth / 2, y - 5);
+                });
+            });
+        </script>
 
         <!-- Recent Orders -->
         <div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
@@ -60,7 +109,17 @@
                         <td class="p-2">{{ order.customer_name }}</td>
                         <td class="p-2">{{ order.created_at|date:"Y/m/d" }}</td>
                         <td class="p-2">${{ order.get_total_price }}</td>
-                        <td class="p-2"><span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm">{{ order.get_status_display }}</span></td>
+                        <td class="p-2">
+                            <span class="py-1 px-2 rounded-full text-sm
+                                {% if order.status == 'pd' %} bg-yellow-200 text-yellow-800
+                                {% elif order.status == 'pg' %} bg-blue-200 text-blue-800
+                                {% elif order.status == 'shd' %} bg-purple-200 text-purple-800
+                                {% elif order.status == 'dd' %} bg-green-200 text-green-800
+                                {% elif order.status == 'cd' %} bg-red-200 text-red-800
+                                {% else %} bg-gray-200 text-gray-800 {% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
                 {% endfor %}

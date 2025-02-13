@@ -37,11 +37,22 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.pk} - {self.customer_name}"
 
+    @staticmethod
+    def get_all_orders_total():
+        orders = Order.objects.all()
+        total = sum(order.get_total_price() for order in orders)
+        return total
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_items')
     quantity = models.PositiveIntegerField(default=1)
 
+    def get_price(self):
+        return self.quantity * self.product.price
+
     def __str__(self):
         return f"{self.quantity} {self.product.name}"
+
+    def get_order_item_delete_url(self):
+        return reverse('orders:order_item_delete', args=[self.pk])

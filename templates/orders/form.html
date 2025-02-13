@@ -69,17 +69,19 @@
                                 <td class="p-2">
                                     <input type="text" name="product_{{ item.pk }}" value="{{ item.product.name }}" class="w-full border border-gray-300 rounded-md shadow-sm" readonly>
                                 </td>
-                                <td class="p-2">
+                               <td class="p-2">
                                     <input type="number" name="quantity_{{ item.pk }}" value="{{ item.quantity }}" class="w-full border border-gray-300 rounded-md shadow-sm">
                                 </td>
                                 <td class="p-2">
                                     <input type="number" name="price_{{ item.pk }}" value="{{ item.product.price }}" step="0.01" class="w-full border border-gray-300 rounded-md shadow-sm">
                                 </td>
                                 <td class="p-2">
-                                    ${{ order.get_total_price|floatformat:2 }}
+                                    ${{ item.get_price }}
                                 </td>
                                 <td class="p-2">
-                                    <a href="{{ order.get_delete_list_url }}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                                    <a href="{{ item.get_order_item_delete_url }}" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
