@@ -2,7 +2,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Category
 
-class CategoryForm(forms.ModelForm):  # forms.Form emas, forms.ModelForm ishlatamiz!
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'desc', 'image']
+
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'block text-sm font-medium text-gray-700',
     }))
@@ -22,6 +26,4 @@ class CategoryForm(forms.ModelForm):  # forms.Form emas, forms.ModelForm ishlata
                 raise ValidationError('The category name must consist of letters.')
         return self.cleaned_data['name']
 
-    class Meta:
-        model = Category
-        fields = ['name', 'desc', 'image']
+
